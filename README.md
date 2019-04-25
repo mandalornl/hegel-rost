@@ -86,16 +86,17 @@ Create a file `/etc/systemd/system/hegel-rost.service` with the following conten
 
 ```ini
 [Unit]
-Description=Hegel Röst Daemon
+Description=Hegel Rost Daemon
 After=network.target
 
 [Service]
-User=<user>
-Group=<group>
+#User=<user>
+#Group=<group>
 Type=simple
 ExecStart=/usr/bin/node /opt/hegel-rost/node_modules/.bin/babel-node /opt/hegel-rost/app.js
 KillMode=process
 Restart=on-failure
+WorkingDirectory=/opt/hegel-rost
 
 [Install]
 WantedBy=multi-user.target
