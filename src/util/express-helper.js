@@ -7,7 +7,7 @@ import isPlainObject from 'lodash/isPlainObject';
  *
  * @returns {Function}
  */
-export function api(fn)
+export const api = fn =>
 {
   return (req, res) => fn(req, res)
       .then(result => res.json(result))
@@ -17,7 +17,7 @@ export function api(fn)
 
         res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
       });
-}
+};
 
 /**
  * Wrap async function into middleware
@@ -26,7 +26,7 @@ export function api(fn)
  *
  * @returns {Function}
  */
-export function catchExceptions(fn)
+export const catchExceptions = fn =>
 {
 	return (req, res, next) => fn(req, res, next).catch(exception =>
   {
@@ -34,4 +34,4 @@ export function catchExceptions(fn)
 
     res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
   });
-}
+};

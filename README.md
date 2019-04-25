@@ -24,6 +24,12 @@ Be sure to configure the `DEVICE_URL` used by your Hegel device, in the `.env` f
 DEVICE_URL=<protocol>://<host>:<port>
 ``` 
 
+**Example:**
+
+```dotenv
+DEVICE_URL=http://192.168.178.86:50001
+```
+
 ## Usage
 
 Start the app with:
@@ -35,11 +41,10 @@ $ yarn build && yarn start
 For development run:
 
 ```bash
-$ yarn dev-api
-$ yarn dev-app
+$ yarn dev
 ```
 
-A `dummy` device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. **Note** Be sure to change the `DEVICE_URL` in the `.env` file accordingly. 
+A 'dummy' device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. **Note** Be sure to change the `DEVICE_URL` to `http://localhost:50001` in the `.env` file. 
 
 ```bash
 $ yarn dev-device
@@ -74,6 +79,45 @@ Available control `codes` are:
 * `v` for `volume` : `0` - `100`
 * `m` for `mute` : `1` or `0`
 * `r` for `reset` : `~`, `1` - `255`
+
+## Unix - Daemon
+
+Create a file `/etc/systemd/system/hegel-rost.service` with the following content:
+
+```ini
+[Unit]
+Description=Hegel Röst Daemon
+After=network.target
+
+[Service]
+User=<user>
+Group=<group>
+Type=simple
+ExecStart=/usr/bin/node /opt/hegel-rost/node_modules/.bin/babel-node /opt/hegel-rost/app.js
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable at boot with:
+
+```bash
+$ sudo systemctl enable hegel-rost
+```
+
+Start manually with:
+
+```bash
+$ sudo systemctl start hegel-rost
+```
+
+Stop manually with:
+
+```bash
+$ sudo systemctl stop hegel-rost
+```
 
 ## Disclaimer
 

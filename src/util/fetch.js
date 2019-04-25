@@ -8,7 +8,7 @@ import axios from 'axios';
  * @returns {Promise<Object|null>}
  */
 export default url => axios.get(url, {
-  baseURL: process.env.API_URL
+  baseURL: '/api'
 }).then(response => response.data).catch(error =>
 {
   console.error(error);

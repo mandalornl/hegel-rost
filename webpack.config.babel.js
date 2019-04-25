@@ -1,19 +1,21 @@
-require('dotenv').config();
+import 'dotenv/config';
 
-const path = require('path');
+import path from 'path';
 
-const ip = require('ip');
+import { json } from 'express';
 
-const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserJsPlugin = require('terser-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
-const HtmlPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+import VueLoaderPlugin from 'vue-loader/lib/plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import TerserJsPlugin from 'terser-webpack-plugin';
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import CleanPlugin from 'clean-webpack-plugin';
+import HtmlPlugin from 'html-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+
+import api from '@/middleware/api';
 
 const env = process.env.NODE_ENV || 'development';
+const port = process.env.PORT || 3000;
 
 module.exports = {
 	mode: env,
@@ -102,7 +104,7 @@ module.exports = {
 			}
 		},
 		runtimeChunk: {
-			name: entrypoint => `runtime~${entrypoint.name}`
+			name: entry => `runtime~${entry.name}`
 		},
 		mangleWasmImports: true,
 		removeAvailableModules: true,
@@ -111,12 +113,6 @@ module.exports = {
 	},
 
 	plugins: [
-	  new webpack.DefinePlugin({
-			'process.env': {
-				'API_URL': JSON.stringify(`http://${ip.address()}:${process.env.API_PORT || 3030}/api`)
-			}
-		}),
-
 		new CleanPlugin({
 			verbose: true
 		}),
@@ -141,10 +137,18 @@ module.exports = {
 
 	devServer: {
 		host: '0.0.0.0',
-		port: process.env.APP_PORT || 3000,
+		port: port,
 		compress: true,
 		open: false,
 		overlay: true,
-		hot: true
+		hot: true,
+    before: app =>
+    {
+      app.use('/api', json(), api);
+    },
+    after: app =>
+    {
+      app.use((req, res) => res.status(500).send('500 - Server error'));
+    }
 	}
 };
