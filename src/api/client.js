@@ -32,7 +32,7 @@ const get = data => new Promise((resolve, reject) =>
 
 	  const code = queue.shift();
 
-		client.write(code);
+		client.write(`${code}\r`);
 
 		debug(`Request '${code}'`);
 	});
@@ -62,7 +62,7 @@ const get = data => new Promise((resolve, reject) =>
 
 		if (code)
 		{
-			client.write(code);
+			client.write(`${code}\r`);
 
 			debug(`Request '${code}'`);
 
