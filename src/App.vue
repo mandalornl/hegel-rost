@@ -228,14 +228,14 @@
         if (!response)
         {
           this.snackbar = true;
-
-          return;
         }
-
-        this.power = response.data.p;
-        this.mute = response.data.m;
-        this.volume = response.data.v;
-        this.input = response.data.i;
+        else
+        {
+          this.power = response.data.p;
+          this.mute = response.data.m;
+          this.volume = response.data.v;
+          this.input = response.data.i;
+        }
 
         setTimeout(async () => await this.loadStatus(), 1000);
       },
