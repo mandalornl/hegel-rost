@@ -18,87 +18,84 @@ const deviceUrl = url.parse(process.env.DEVICE_URL);
  */
 const get = data => new Promise((resolve, reject) =>
 {
-	const queue = Array.isArray(data) ? data : [data];
+  const queue = Array.isArray(data) ? data : [data];
 
-	const result = {};
+  const result = {};
 
-	const client = net.createConnection({
-		host: deviceUrl.hostname,
-		port: deviceUrl.port,
-		timeout: 3000
-	}, () =>
-	{
-	  debug('Connection start');
+  const client = net.createConnection({
+    host: deviceUrl.hostname,
+    port: deviceUrl.port
+  }, () =>
+  {
+    debug('Connection start');
 
-	  const code = queue.shift();
+    const code = queue.shift();
 
-		client.write(`${code}\r`);
+    client.write(`${code}\r`);
 
-		debug(`Request '${code}'`);
-	});
+    debug(`Request '${code}'`);
+  });
 
-	client.on('data', buffer =>
-	{
-		// normalize data
-		const data = normalize(buffer);
+  client.on('data', buffer =>
+  {
+    // normalize data
+    const data = normalize(buffer);
 
-		if (!/^-\w\.(\d+|~)$/.test(data))
-		{
-			return reject({
-				status: 500,
-				message: 'Invalid response',
-				data: data
-			});
-		}
+    if (!/^-\w\.(\d+|~)$/.test(data))
+    {
+      return reject({
+        status: 500,
+        message: 'Invalid response',
+        data: data
+      });
+    }
 
-		debug(`Response '${data}'`);
+    debug(`Response '${data}'`);
 
-		const type = data.replace(/[^a-z]+/g, '');
-		const value = data.split('.').pop();
+    const type = data.replace(/[^a-z]+/g, '');
+    const value = data.split('.').pop();
 
-		result[type] = Number(value) != value ? value : Number(value);
+    result[type] = Number(value) != value ? value : Number(value);
 
-		const code = queue.shift();
+    const code = queue.shift();
 
-		if (code)
-		{
-			client.write(`${code}\r`);
+    if (code)
+    {
+      client.write(`${code}\r`);
 
-			debug(`Request '${code}'`);
+      debug(`Request '${code}'`);
 
-			return;
-		}
+      return;
+    }
 
-		client.end();
+    client.end();
 
-		resolve({ data: result });
-	});
+    resolve({ data: result });
+  });
 
-	client.on('timeout', () =>
-	{
-		debug('Connection timeout');
+  client.on('timeout', () =>
+  {
+    debug('Connection timeout');
 
-		client.end();
+    client.end();
 
-		reject({
-			status: 408,
-			message: 'Connection timeout'
-		});
-	});
+    reject({
+      status: 408,
+      message: 'Connection timeout'
+    });
+  });
 
-	client.on('error', error =>
-	{
-		console.error(error.toString());
+  client.on('error', error =>
+  {
+    console.error(error.toString());
 
-		client.end();
+    reject({
+      status: 500,
+      message: 'Connection error'
+    });
+  });
 
-		reject({
-			status: 500,
-			message: 'Connection error'
-		});
-	});
-
-	client.on('end', () => debug('Connection end'));
+  client.on('close', () => debug('Connection close'));
 });
 
 export default { get };

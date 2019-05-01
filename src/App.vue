@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-toolbar app>
-        <img src="./assets/logo.svg" width="112" height="48" alt="Hegel Music Systems - Röst">
+      <img src="./assets/logo.svg" width="112" height="48" alt="Hegel Music Systems - Röst">
     </v-toolbar>
     <v-content>
       <v-container grid-list-sm>

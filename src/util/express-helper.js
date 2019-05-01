@@ -9,7 +9,9 @@ import isPlainObject from 'lodash/isPlainObject';
  */
 export const api = fn =>
 {
-  return (req, res) => fn(req, res)
+  return (req, res, next) =>
+  {
+    fn(req, res, next)
       .then(result => res.json(result))
       .catch(exception =>
       {
@@ -17,6 +19,7 @@ export const api = fn =>
 
         res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
       });
+  };
 };
 
 /**
@@ -28,10 +31,14 @@ export const api = fn =>
  */
 export const catchExceptions = fn =>
 {
-	return (req, res, next) => fn(req, res, next).catch(exception =>
+  return (req, res, next) =>
   {
-    console.error(exception);
+    fn(req, res, next)
+      .catch(exception =>
+      {
+        console.error(exception);
 
-    res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
-  });
+        res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
+      });
+  };
 };

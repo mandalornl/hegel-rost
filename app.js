@@ -18,6 +18,6 @@ app.use((req, res) => res.status(500).send('500 - Server error'));
 const port = process.env.PORT || 3000;
 
 app.listen({
-	host: '0.0.0.0',
-	port: port
+  host: '0.0.0.0',
+  port: port
 }, () => debug(`Listening on: ${port}`));

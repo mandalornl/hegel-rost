@@ -1,6 +1,5 @@
 import { Router } from 'express';
-
-import queue from 'express-queue';
+import Bottleneck from 'bottleneck';
 
 import client from '@/api/client';
 import presets from '@/config/presets';
@@ -8,21 +7,19 @@ import presets from '@/config/presets';
 import { api } from '@/util/express-helper';
 
 const router = new Router();
+const limiter = new Bottleneck({
+  maxConcurrent: 1
+});
 
-router.use(queue({
-  activeLimit: 1,
-  queuedLimit: -1
-}));
-
-router.get('/status', api(async () =>
+router.get('/status', api(async() =>
 {
-  return client.get([
+  return limiter.schedule(() => client.get([
     '-p.?',
     '-v.?',
     '-m.?',
     '-i.?',
     '-r.?'
-  ]);
+  ]));
 }));
 
 router.get('/presets', (req, res) => res.json({ data: presets }));
@@ -37,25 +34,31 @@ router.get('/preset/:preset', api(async req =>
     };
   }
 
-  const codes = presets[req.params['preset']]['codes'];
-  const data = [];
-
-  Object.keys(codes).forEach(code =>
+  return limiter.schedule(() =>
   {
-    data.push(`-${code}.${codes[code]}`);
-  });
+    const codes = presets[req.params['preset']]['codes'];
+    const data = [];
 
-  return client.get(data);
+    Object.keys(codes).forEach(code =>
+    {
+      data.push(`-${code}.${codes[code]}`);
+    });
+
+    return client.get(data);
+  });
 }));
 
 router.get('/code/:code/:value?', api(async req =>
 {
-  const code = req.params['code'];
-  const value = req.params['value'] || '?';
+  return limiter.schedule(() =>
+  {
+    const code = req.params['code'];
+    const value = req.params['value'] || '?';
 
-  return client.get([
-    `-${code}.${value}`
-  ]);
+    return client.get([
+      `-${code}.${value}`
+    ]);
+  });
 }));
 
 router.use((req, res) =>

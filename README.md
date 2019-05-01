@@ -47,7 +47,7 @@ $ yarn dev
 A 'dummy' device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. **Note** Be sure to change the `DEVICE_URL` to `http://localhost:50001` in the `.env` file. 
 
 ```bash
-$ yarn dev-device
+$ yarn dev:device
 ```
 
 The device can also be accessed using:
