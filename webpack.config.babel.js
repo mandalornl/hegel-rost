@@ -2,8 +2,6 @@ import 'dotenv/config';
 
 import path from 'path';
 
-import { json } from 'express';
-
 import VueLoaderPlugin from 'vue-loader/lib/plugin';
 import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -13,10 +11,8 @@ import CleanPlugin from 'clean-webpack-plugin';
 import HtmlPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 
-import api from '@/middleware/api';
-
 const env = process.env.NODE_ENV || 'development';
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT || 3000);
 
 module.exports = {
   mode: env,
@@ -33,7 +29,7 @@ module.exports = {
   entry: path.resolve(__dirname, 'src/app.js'),
 
   output: {
-    filename: '[name].[contenthash].js',
+    filename: '[name].[hash].js',
     path: path.resolve(__dirname, 'dist')
   },
 
@@ -126,9 +122,15 @@ module.exports = {
   },
 
   plugins: [
-    new CleanPlugin({
-      verbose: true
-    }),
+    ...(env === 'production' ? [
+      new CleanPlugin({
+        verbose: true
+      }),
+
+      new MiniCssExtractPlugin({
+        filename: '[name].[hash].css'
+      })
+    ] : []),
 
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
@@ -143,11 +145,7 @@ module.exports = {
       to: path.resolve(__dirname, 'dist'),
       toType: 'dir'
     }])
-  ].concat(env === 'production' ? [
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css'
-    })
-  ] : []),
+  ],
 
   devServer: {
     host: '0.0.0.0',
@@ -156,13 +154,8 @@ module.exports = {
     open: false,
     overlay: true,
     hot: true,
-    before: app =>
-    {
-      app.use('/api', json(), api);
-    },
-    after: app =>
-    {
-      app.use((req, res) => res.status(500).send('500 - Server error'));
+    proxy: {
+      '/api': `http://localhost:${port + 1}`
     }
   }
 };

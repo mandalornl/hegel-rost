@@ -41,7 +41,8 @@ $ yarn build && yarn start
 For development run:
 
 ```bash
-$ yarn dev
+$ yarn dev:api
+$ yarn dev:app
 ```
 
 A 'dummy' device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. **Note** Be sure to change the `DEVICE_URL` to `http://localhost:50001` in the `.env` file. 

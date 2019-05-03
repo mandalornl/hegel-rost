@@ -33,15 +33,15 @@ const server = net.createServer(socket =>
         return socket.write(`-p.${device.power.off()}\r`);
 
       case '-p.t':
-        const value = device.power.toggle();
-        if (value)
+        device.power.toggle();
+        if (device.power.status())
         {
           device.volume.set(20);
           device.input.set(4);
           device.mute.off();
           device.reset.set(2);
         }
-        return socket.write(`-p.${value}\r`);
+        return socket.write(`-p.${device.power.status()}\r`);
 
       case '-p.?':
         return socket.write(`-p.${device.power.status()}\r`);
