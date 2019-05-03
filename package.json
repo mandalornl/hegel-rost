@@ -15,7 +15,7 @@
     "dev:device": "DEBUG=hr:* nodemon -w device.js -w src/api/device.js --exec babel-node device.js",
     "build": "NODE_ENV=production webpack --config webpack.config.babel.js",
     "start": "babel-node app.js",
-    "eslint": "eslint src"
+    "eslint": "eslint \"src/**/*.{js,vue}\""
   },
   "dependencies": {
     "@babel/core": "^7.4.3",

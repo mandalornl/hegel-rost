@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: require.resolve('babel-eslint'),
+    parser: 'babel-eslint',
     ecmaVersion: 10,
     sourceType: 'module'
   },
@@ -14,9 +14,10 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/essential'
   ],
+  plugins: [
+    'vue'
+  ],
   rules: {
-    'no-console': process.env.NODE_ENV !== 'production' ? 0 : 2,
-    'no-useless-escape': 0,
-    'no-empty': 0
+    'no-console': 0
   }
 };
