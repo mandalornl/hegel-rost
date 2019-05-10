@@ -9,9 +9,9 @@ import axios from 'axios';
  */
 export default url => axios.get(url, {
   baseURL: '/api'
-}).then(response => response.data).catch(error =>
-{
-  console.error(error);
+}).then(response => response.data)
+  .catch(error => {
+    console.error(error);
 
-  return null;
-});
+    return null;
+  });

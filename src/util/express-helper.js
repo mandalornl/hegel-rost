@@ -7,14 +7,11 @@ import isPlainObject from 'lodash/isPlainObject';
  *
  * @returns {Function}
  */
-export const api = fn =>
-{
-  return (req, res, next) =>
-  {
+export const api = fn => {
+  return (req, res, next) => {
     fn(req, res, next)
       .then(result => res.json(result))
-      .catch(exception =>
-      {
+      .catch(exception => {
         console.error(exception);
 
         res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());
@@ -29,13 +26,10 @@ export const api = fn =>
  *
  * @returns {Function}
  */
-export const catchExceptions = fn =>
-{
-  return (req, res, next) =>
-  {
+export const catchExceptions = fn => {
+  return (req, res, next) => {
     fn(req, res, next)
-      .catch(exception =>
-      {
+      .catch(exception => {
         console.error(exception);
 
         res.status(exception.status || 500).json(isPlainObject(exception) ? exception : exception.toString());

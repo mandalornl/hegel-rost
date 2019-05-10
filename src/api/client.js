@@ -9,6 +9,8 @@ import normalize from '@/util/normalize';
 
 const deviceUrl = url.parse(process.env.DEVICE_URL);
 
+let client;
+
 /**
  * Get
  *
@@ -16,41 +18,23 @@ const deviceUrl = url.parse(process.env.DEVICE_URL);
  *
  * @returns {Promise<Object>}
  */
-const get = data => new Promise((resolve, reject) =>
-{
+const get = data => new Promise((resolve, reject) => {
   const queue = Array.isArray(data) ? data : [data];
 
   const result = {};
 
-  const client = net.createConnection({
-    host: deviceUrl.hostname,
-    port: deviceUrl.port
-  }, () =>
-  {
-    debug('Connection start');
-
-    const code = queue.shift();
-
-    client.write(`${code}\r`);
-
-    debug(`Request '${code}'`);
-  });
-
-  client.on('data', buffer =>
-  {
-    // normalize data
+  const handle = buffer => {
     const data = normalize(buffer);
 
-    if (!/^-\w\.(\d+|~)$/.test(data))
-    {
+    debug(`Data: ${data}`);
+
+    if (!/^-\w\.(\d+|~)$/.test(data)) {
       return reject({
         status: 500,
         message: 'Invalid response',
         data: data
       });
     }
-
-    debug(`Response '${data}'`);
 
     const type = data.replace(/[^a-z]+/g, '');
     const value = data.split('.').pop();
@@ -59,43 +43,70 @@ const get = data => new Promise((resolve, reject) =>
 
     const code = queue.shift();
 
-    if (code)
-    {
-      client.write(`${code}\r`);
+    if (code) {
+      client.once('data', handle);
 
-      debug(`Request '${code}'`);
+      client.write(`${code}\r`);
 
       return;
     }
 
-    client.end();
-
     resolve({ data: result });
-  });
+  };
 
-  client.on('timeout', () =>
-  {
-    debug('Connection timeout');
+  const process = () => {
+    client.once('data', handle);
 
-    client.end();
+    const code = queue.shift();
 
-    reject({
-      status: 408,
-      message: 'Connection timeout'
+    client.write(`${code}\r`);
+  };
+
+  if (!client) {
+    client = net.createConnection({
+      host: deviceUrl.hostname,
+      port: deviceUrl.port,
+      timeout: 60 * 60 * 1000 // 1 hour
+    }, () => {
+      client.setNoDelay(true);
+
+      process();
     });
-  });
 
-  client.on('error', error =>
-  {
-    console.error(error.toString());
-
-    reject({
-      status: 500,
-      message: 'Connection error'
+    client.on('connect', () => {
+      debug('Connection start');
     });
-  });
 
-  client.on('close', () => debug('Connection close'));
+    client.on('timeout', () => {
+      debug('Connection timeout');
+
+      client.end();
+
+      reject({
+        status: 408,
+        message: 'Connection timeout'
+      });
+    });
+
+    client.on('error', error => {
+      console.error(error.toString());
+
+      reject({
+        status: 500,
+        message: 'Connection error'
+      });
+    });
+
+    client.on('close', () => {
+      debug('Connection close');
+
+      client = null;
+    });
+
+    return;
+  }
+
+  process();
 });
 
 export default { get };

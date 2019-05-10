@@ -1,18 +1,18 @@
 <template>
   <v-app>
     <v-toolbar app>
-      <img src="./assets/logo.svg" width="112" height="48" alt="Hegel Music Systems - Röst">
+      <img src="logo.svg" width="112" height="48" alt="Hegel Music Systems - Röst">
     </v-toolbar>
     <v-content>
       <v-container grid-list-sm>
         <v-layout row wrap>
           <v-flex xs6>
-            <v-btn block large :color="power ? 'primary' : ''" @click="powerOn">
+            <v-btn block large :color="toggleColor(power)" @click="powerOn">
               On
             </v-btn>
           </v-flex>
           <v-flex xs6>
-            <v-btn block large :color="!power ? 'primary' : ''" @click="powerOff">
+            <v-btn block large :color="toggleColor(!power)" @click="powerOff">
               Off
             </v-btn>
           </v-flex>
@@ -20,7 +20,7 @@
             <span :class="`volume${!power ? ' disabled' : ''}`">{{ volume }}</span>
           </v-flex>
           <v-flex xs4>
-            <v-btn block large :color="mute ? 'primary' : ''" :disabled="!power" @click="muteToggle">
+            <v-btn block large :color="toggleColor(mute)" :disabled="!power" @click="muteToggle">
               <v-icon>volume_off</v-icon>
             </v-btn>
           </v-flex>
@@ -38,7 +38,7 @@
             <v-divider class="mt-3 mb-1"></v-divider>
           </v-flex>
           <v-flex v-for="(item, index) in inputs" :key="`input${index}`" xs6 sm4>
-            <v-btn block large :color="input === item.value ? 'primary' : ''" :disabled="!power"
+            <v-btn block large :color="toggleColor(input === item.value)" :disabled="!power"
                    @click="selectInput(item.value)">
               {{ item.label }}
             </v-btn>
@@ -55,9 +55,9 @@
       </v-container>
     </v-content>
     <v-footer class="px-3">Copyright &copy; {{ year }}</v-footer>
-    <v-snackbar v-model="snackbar" bottom color="error">
+    <v-snackbar v-model="errored" bottom color="error">
       An error occurred.
-      <v-btn flat @click="snackbar = false">Hide</v-btn>
+      <v-btn flat @click="errored = false">Hide</v-btn>
     </v-snackbar>
   </v-app>
 </template>
@@ -86,32 +86,30 @@
 
       presets: [],
 
-      snackbar: false
+      errored: false
     }),
 
     computed: {
       year: () => new Date().getFullYear()
     },
 
-    async created()
-    {
+    async created() {
       await this.loadStatus();
       await this.loadPresets();
     },
 
     methods: {
-      async powerOn()
-      {
-        if (this.power)
-        {
+      toggleColor: value => value ? 'primary' : '',
+
+      async powerOn() {
+        if (this.power) {
           return;
         }
 
         const response = await fetch('/code/p/1');
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -119,10 +117,8 @@
         this.power = 1;
       },
 
-      async powerOff()
-      {
-        if (!this.power)
-        {
+      async powerOff() {
+        if (!this.power) {
           return;
         }
 
@@ -130,7 +126,7 @@
 
         if (!response)
         {
-          this.snackbar = true;
+          this.errored = true;
 
           return;
         }
@@ -138,13 +134,11 @@
         this.power = 0;
       },
 
-      async muteToggle()
-      {
+      async muteToggle() {
         const response = await fetch('/code/m/t');
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -152,18 +146,15 @@
         this.mute = response.data.m;
       },
 
-      async volumeUp()
-      {
-        if (this.volume >= 100)
-        {
+      async volumeUp() {
+        if (this.volume >= 100) {
           return;
         }
 
         const response = await fetch('/code/v/u');
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -172,18 +163,15 @@
         this.mute = 0;
       },
 
-      async volumeDown()
-      {
-        if (this.volume <= 0)
-        {
+      async volumeDown() {
+        if (this.volume <= 0) {
           return;
         }
 
         const response = await fetch('/code/v/d');
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -192,13 +180,11 @@
         this.mute = 0;
       },
 
-      async selectInput(value)
-      {
+      async selectInput(value) {
         const response = await fetch(`/code/i/${value}`);
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -206,13 +192,11 @@
         this.input = value;
       },
 
-      async selectPreset(value)
-      {
+      async selectPreset(value) {
         const response = await fetch(`/preset/${value}`);
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }
@@ -221,16 +205,12 @@
         this.volume = response.data.v;
       },
 
-      async loadStatus()
-      {
+      async loadStatus() {
         const response = await fetch('/status');
 
-        if (!response)
-        {
-          this.snackbar = true;
-        }
-        else
-        {
+        if (!response) {
+          this.errored = true;
+        } else {
           this.power = response.data.p;
           this.mute = response.data.m;
           this.volume = response.data.v;
@@ -240,13 +220,11 @@
         setTimeout(async () => await this.loadStatus(), 1000);
       },
 
-      async loadPresets()
-      {
+      async loadPresets() {
         const response = await fetch('/presets');
 
-        if (!response)
-        {
-          this.snackbar = true;
+        if (!response) {
+          this.errored = true;
 
           return;
         }

@@ -10,15 +10,15 @@ import normalize from '@/util/normalize';
 
 const sockets = [];
 
-const server = net.createServer(socket =>
-{
+const server = net.createServer(socket => {
   debug(`${socket.remotePort} connected`);
 
   sockets.push(socket);
 
-  socket.on('data', buffer =>
-  {
+  socket.on('data', buffer => {
     const data = normalize(buffer);
+
+    debug(`Data: ${data}`);
 
     switch (data)
     {
@@ -27,21 +27,25 @@ const server = net.createServer(socket =>
         device.input.set(4);
         device.mute.off();
         device.reset.set(2);
+
         return socket.write(`-p.${device.power.on()}\r`);
 
       case '-p.0':
         return socket.write(`-p.${device.power.off()}\r`);
 
-      case '-p.t':
-        device.power.toggle();
-        if (device.power.status())
+      case '-p.t': {
+        const value = device.power.toggle();
+
+        if (value)
         {
           device.volume.set(20);
           device.input.set(4);
           device.mute.off();
           device.reset.set(2);
         }
-        return socket.write(`-p.${device.power.status()}\r`);
+
+        return socket.write(`-p.${value}\r`);
+      }
 
       case '-p.?':
         return socket.write(`-p.${device.power.status()}\r`);
@@ -79,8 +83,7 @@ const server = net.createServer(socket =>
         return socket.write(`-r.${device.reset.status()}\r`);
     }
 
-    switch (true)
-    {
+    switch (true) {
       case /^-v\.\d+$/.test(data):
         device.mute.off();
         return socket.write(`-v.${device.volume.set(data.replace(/[^\d]+/, ''))}\r`);
@@ -95,15 +98,11 @@ const server = net.createServer(socket =>
     socket.write('-e.1\r');
   });
 
-  socket.on('error', error =>
-  {
-    console.error(error);
-
-    socket.end();
+  socket.on('error', error => {
+    console.error(error.toString());
   });
 
-  socket.on('end', () =>
-  {
+  socket.on('end', () => {
     debug(`${socket.remotePort} disconnected`);
 
     sockets.splice(sockets.indexOf(socket), 1);
