@@ -2801,6 +2801,22 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
+express-end@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/express-end/-/express-end-0.0.8.tgz#0c8fd95428932158f2b4cf91f4045346bf2c5323"
+  integrity sha1-DI/ZVCiTIVjytM+R9ARTRr8sUyM=
+  dependencies:
+    debug "^2.2.0"
+
+express-queue@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/express-queue/-/express-queue-0.0.12.tgz#d16d90f20bab5a018d1a7ae6bfb74b9c8c80747c"
+  integrity sha512-TF+F9RBr380171O4H1pY8LqoChyD3UbCDOutpoZnjOOgSYtE56qbFau04gP88KiHfbUZGVbl7PbsTuSjk3tUOQ==
+  dependencies:
+    debug "^3.1.0"
+    express-end "0.0.8"
+    mini-queue "0.0.14"
+
 express@^4.16.4:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
@@ -4580,6 +4596,13 @@ mini-css-extract-plugin@^0.6.0:
     normalize-url "^2.0.1"
     schema-utils "^1.0.0"
     webpack-sources "^1.1.0"
+
+mini-queue@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/mini-queue/-/mini-queue-0.0.14.tgz#83d2f3f908e3cac5390bd986d1e6fbbfa0d95b93"
+  integrity sha512-DNh9Wn8U1jrmn1yVfpviwClyER/Y4ltgGbG+LF/KIdKJ8BEo2Q9jDDPG7tEhz6F/DTZ/ohv5D7AAXFVSFyP05Q==
+  dependencies:
+    debug "^3.1.0"
 
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"

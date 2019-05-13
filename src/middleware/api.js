@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import queue from 'express-queue';
 
 import client from '@/api/client';
 import presets from '@/config/presets';
@@ -6,6 +7,11 @@ import presets from '@/config/presets';
 import { api } from '@/util/express-helper';
 
 const router = new Router();
+
+router.use(queue({
+  activeLimit: 1,
+  queuedLimit: -1
+}));
 
 router.get('/status', api(async () => {
   return client.get([

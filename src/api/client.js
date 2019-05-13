@@ -66,7 +66,7 @@ const get = data => new Promise((resolve, reject) => {
     client = net.createConnection({
       host: deviceUrl.hostname,
       port: deviceUrl.port,
-      timeout: 60 * 60 * 1000 // 1 hour
+      timeout: 3000
     }, () => {
       client.setNoDelay(true);
 
