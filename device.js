@@ -26,7 +26,7 @@ const server = net.createServer(socket => {
         device.volume.set(20);
         device.input.set(4);
         device.mute.off();
-        device.reset.set(2);
+        device.reset.stop();
 
         return socket.write(`-p.${device.power.on()}\r`);
 
@@ -41,7 +41,7 @@ const server = net.createServer(socket => {
           device.volume.set(20);
           device.input.set(4);
           device.mute.off();
-          device.reset.set(2);
+          device.reset.stop();
         }
 
         return socket.write(`-p.${value}\r`);

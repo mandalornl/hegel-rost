@@ -6,7 +6,7 @@ let power = 0;
 /**
  * @type {Number}
  */
-let volume = 20;
+let volume = 0;
 
 /**
  * @type {Number}
@@ -16,7 +16,7 @@ let mute = 0;
 /**
  * @type {Number}
  */
-let input = 4;
+let input = 0;
 
 /**
  * @type {Number|String}
