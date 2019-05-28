@@ -7,12 +7,8 @@ Web application to access IP-control features of the Hegel Röst.
 Clone the project or [download](https://github.com/mandalornl/hegel-rost/archive/master.zip) and extract the `zip` file.
 
 ```bash
-$ git clone https://github.com/mandalornl/hegel-rost.git
-```
-
-Install packages.
-
-```bash
+$ git clone https://github.com/mandalornl/hegel-rost.git /opt/hegel-rost
+$ cd /opt/hegel-rost
 $ yarn install
 ```
 
@@ -59,7 +55,7 @@ $ telnet localhost 50001
 
 ## Presets
 
-Presets can be defined to store your preferred settings i.e. for listening to music or watching movies. Just create a `presets.json` file and place it under the `./config/` folder.
+Presets can be defined to store your preferred settings i.e. for listening to music or watching movies. Just create a `presets.json` file and place it under the `config/` folder.
 
 **Example:**
 
@@ -75,11 +71,11 @@ Presets can be defined to store your preferred settings i.e. for listening to mu
 
 Available control `codes` are:
 
-* `p` for `power` : `1` or `0`
-* `i` for `input` : `1` - `9`
-* `v` for `volume` : `0` - `100`
-* `m` for `mute` : `1` or `0`
-* `r` for `reset` : `~`, `1` - `255`
+* `p` : `1` or `0` for `power`
+* `i` : `1` - `9` for `input`
+* `v` : `0` - `100` for `volume`
+* `m` : `1` or `0` for `mute`
+* `r` : `~`, `1` - `255` for `reset`
 
 ## Unix - Daemon
 

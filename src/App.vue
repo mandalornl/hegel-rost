@@ -38,8 +38,13 @@
             <v-divider class="mt-3 mb-1"></v-divider>
           </v-flex>
           <v-flex v-for="(item, index) in inputs" :key="`input${index}`" xs6 sm4>
-            <v-btn block large :color="toggleColor(input === item.value)" :disabled="!power"
-                   @click="selectInput(item.value)">
+            <v-btn
+              block
+              large
+              :color="toggleColor(input === item.value)"
+              :disabled="!power"
+              @click="selectInput(item.value)"
+            >
               {{ item.label }}
             </v-btn>
           </v-flex>
