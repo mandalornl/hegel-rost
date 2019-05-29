@@ -100,6 +100,7 @@ const get = data => new Promise((resolve, reject) => {
     client.on('close', () => {
       debug('Connection close');
 
+      client.removeAllListeners();
       client = null;
     });
 
