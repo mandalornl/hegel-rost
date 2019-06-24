@@ -1,15 +1,14 @@
-import 'dotenv/config';
+require('dotenv').config();
 
-import path from 'path';
-
-import VueLoaderPlugin from 'vue-loader/lib/plugin';
-import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import TerserJsPlugin from 'terser-webpack-plugin';
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import CleanPlugin from 'clean-webpack-plugin';
-import HtmlPlugin from 'html-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
+const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserJsPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const env = process.env.NODE_ENV || 'development';
 const port = Number(process.env.PORT || 3000);
@@ -92,7 +91,7 @@ module.exports = {
       new TerserJsPlugin({
         sourceMap: true,
         parallel: true,
-        cache: env === 'production'
+        cache: true
       }),
       new OptimizeCssAssetsPlugin()
     ],
@@ -123,7 +122,7 @@ module.exports = {
 
   plugins: [
     ...(env === 'production' ? [
-      new CleanPlugin({
+      new CleanWebpackPlugin({
         verbose: true
       }),
 

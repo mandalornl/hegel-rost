@@ -28,10 +28,16 @@ DEVICE_URL=http://192.168.178.86:50001
 
 ## Usage
 
+Build the app with:
+
+```bash
+$ yarn build
+```
+
 Start the app with:
 
 ```bash
-$ yarn build && yarn start
+$ yarn start
 ```
 
 For development run:
