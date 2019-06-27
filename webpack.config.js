@@ -16,7 +16,7 @@ const port = Number(process.env.PORT || 3000);
 module.exports = {
   mode: env,
 
-  devtool: env === 'production' ? 'source-map' : 'inline-source-map',
+  devtool: env === 'production' ? 'source-map' : 'eval',
 
   resolve: {
     alias: {
@@ -25,10 +25,10 @@ module.exports = {
     }
   },
 
-  entry: path.resolve(__dirname, 'src/app.js'),
+  entry: path.resolve(__dirname, 'src/main.js'),
 
   output: {
-    filename: '[name].[hash].js',
+    filename: env === 'production' ? '[name].[contenthash].js' : '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
 
@@ -96,28 +96,9 @@ module.exports = {
       new OptimizeCssAssetsPlugin()
     ],
     splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
-      maxSize: 0,
-      cacheGroups: {
-        vendors: {
-          test: /\/node_modules\//,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
-        }
-      }
+      chunks: 'all'
     },
-    runtimeChunk: {
-      name: entry => `runtime~${entry.name}`
-    },
-    mangleWasmImports: true,
-    removeAvailableModules: true,
-    removeEmptyChunks: true,
-    mergeDuplicateChunks: true
+    runtimeChunk: true
   },
 
   plugins: [
@@ -127,7 +108,7 @@ module.exports = {
       }),
 
       new MiniCssExtractPlugin({
-        filename: '[name].[hash].css'
+        filename: env === 'production' ? '[name].[contenthash].css' : '[name].css'
       })
     ] : []),
 

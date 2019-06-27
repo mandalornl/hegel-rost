@@ -39,7 +39,7 @@ const get = data => new Promise((resolve, reject) => {
     const type = data.replace(/[^a-z]+/g, '');
     const value = data.split('.').pop();
 
-    result[type] = Number(value) != value ? value : Number(value);
+    result[type] = isNaN('' + value) ? value : +value;
 
     const code = queue.shift();
 
