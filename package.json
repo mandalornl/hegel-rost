@@ -11,9 +11,9 @@
   "author": "Joost Berns",
   "license": "MIT",
   "scripts": {
-    "dev:app": "DEBUG=hr:* webpack-dev-server --config webpack.config.js",
-    "dev:api": "DEBUG=hr:* nodemon -w api.js -w \"src/**/*.js\" --exec babel-node api.js",
-    "dev:device": "DEBUG=hr:* nodemon -w device.js -w \"src/**/*.js\" --exec babel-node device.js",
+    "dev:app": "DEBUG=hegel-rost:* webpack-dev-server --config webpack.config.js",
+    "dev:api": "DEBUG=hegel-rost:api nodemon -w api.js -w \"src/**/*.js\" --exec babel-node api.js",
+    "dev:device": "DEBUG=hegel-rost:device nodemon -w device.js -w \"src/**/*.js\" --exec babel-node device.js",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "start": "babel-node app.js",
     "eslint": "eslint \"src/**/*.{js,vue}\""

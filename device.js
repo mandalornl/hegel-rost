@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const debug = require('debug')('hr:device');
+const debug = require('debug')('hegel-rost:device');
 
 import net from 'net';
 import url from 'url';

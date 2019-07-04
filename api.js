@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const debug = require('debug')('hr:api');
+const debug = require('debug')('hegel-rost:api');
 
 import express, { json } from 'express';
 import compression from 'compression';
@@ -14,7 +14,4 @@ app.use((req, res) => res.status(500).send('500 - Server error'));
 
 const port = Number(process.env.PORT || 3000) + 1;
 
-app.listen({
-  host: 'localhost',
-  port: port
-}, () => debug(`Listening on: ${port}`));
+app.listen(port, () => debug(`Listening on http://localhost:${port}`));

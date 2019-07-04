@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const debug = require('debug')('hr:app');
+const debug = require('debug')('hegel-rost:app');
 
 import path from 'path';
 
@@ -20,4 +20,4 @@ const port = process.env.PORT || 3000;
 app.listen({
   host: '0.0.0.0',
   port: port
-}, () => debug(`Listening on: ${port}`));
+}, () => debug(`Listening on http://localhost:${port}`));
