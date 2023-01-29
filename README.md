@@ -8,49 +8,20 @@ Clone the project or [download](https://github.com/mandalornl/hegel-rost/archive
 
 ```bash
 $ git clone https://github.com/mandalornl/hegel-rost.git /opt/hegel-rost
-$ cd /opt/hegel-rost
-$ yarn install
-```
-
-## Configuration
-
-Be sure to configure the `DEVICE_URL` used by your Hegel device, in the `.env` file.
-
-```dotenv
-DEVICE_URL=<protocol>://<host>:<port>
-``` 
-
-**Example:**
-
-```dotenv
-DEVICE_URL=http://192.168.178.86:50001
 ```
 
 ## Usage
 
-Build the app with:
-
-```bash
-$ yarn build
-```
-
-Start the app with:
-
-```bash
-$ yarn start
-```
-
 For development run:
 
 ```bash
-$ yarn dev:api
-$ yarn dev:app
+$ DEVICE_URL=http://[HOSTNAME]:50001 bin/app.js
 ```
 
-A 'dummy' device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. **Note** Be sure to change the `DEVICE_URL` to `http://localhost:50001` in the `.env` file. 
+A "dummy" device can be started to mimic the Röst, so you can keep listening to your favorite music undisturbed. Just leave out the `DEVICE_URL` part when you start the app. 
 
 ```bash
-$ yarn dev:device
+$ bin/device.js
 ```
 
 The device can also be accessed using:
@@ -59,29 +30,39 @@ The device can also be accessed using:
 $ telnet localhost 50001
 ```
 
+To start the web app:
+
+```bash
+$ yarn dev
+```
+
+Defaults to `http://localhost:3000`.
+
 ## Presets
 
-Presets can be defined to store your preferred settings i.e. for listening to music or watching movies. Just create a `presets.json` file and place it under the `config/` folder.
+Presets can be defined to store your preferred settings i.e. for listening to music or watching movies. Just create a `presets.json` file and place it under the `bin/` folder.
 
 **Example:**
 
 ```json
-[{
-  "label": "Music",
-  "codes": {
-    "i": 4,
-    "v": 50
+[
+  {
+    "label": "Music",
+    "value": {
+      "i": 4,
+      "v": 50
+    }
   }
-}]
+]
 ```
 
-Available control `codes` are:
+Available `commands` are:
 
-* `p` : `1` or `0` for `power`
+* `p` : `0` or `1` for `power`
 * `i` : `1` - `9` for `input`
 * `v` : `0` - `100` for `volume`
-* `m` : `1` or `0` for `mute`
-* `r` : `~`, `1` - `255` for `reset`
+* `m` : `0` or `1` for `mute`
+* `r` : `~`, `0` - `255` for `reset`
 
 ## Unix - Daemon
 
@@ -96,7 +77,8 @@ After=network.target
 #User=<user>
 #Group=<group>
 Type=simple
-ExecStart=/usr/bin/node /opt/hegel-rost/node_modules/.bin/babel-node /opt/hegel-rost/app.js
+Environment="DEVICE_URL=http://localhost:50001"
+ExecStart=/usr/bin/node /opt/hegel-rost/bin/app.js
 KillMode=process
 Restart=on-failure
 WorkingDirectory=/opt/hegel-rost
@@ -105,22 +87,38 @@ WorkingDirectory=/opt/hegel-rost
 WantedBy=multi-user.target
 ```
 
-Enable at boot with:
+Be sure to configure the `DEVICE_URL` environment variable used by your Hegel device.
+
+```ini
+Environment="DEVICE_HOST=http://192.168.178.86:50001"
+```
+
+After startup the app can be located at port `43931`, usually in the same local network as your Hegel device.
+
+---
+
+Enable at boot:
 
 ```bash
 $ sudo systemctl enable hegel-rost
 ```
 
-Start manually with:
+Start manually:
 
 ```bash
 $ sudo systemctl start hegel-rost
 ```
 
-Stop manually with:
+Stop manually:
 
 ```bash
 $ sudo systemctl stop hegel-rost
+```
+
+Restart manually:
+
+```bash
+$ sudo systemctl restart hegel-rost
 ```
 
 ## Disclaimer

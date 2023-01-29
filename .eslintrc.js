@@ -1,23 +1,20 @@
 module.exports = {
   root: true,
-  parserOptions: {
-    parser: 'babel-eslint',
-    ecmaVersion: 10,
-    sourceType: 'module'
-  },
   env: {
-    es6: true,
-    node: true,
-    browser: true
+    browser: true,
+    node: true
+  },
+  parserOptions: {
+    parser: '@babel/eslint-parser',
+    requireConfigFile: false
   },
   extends: [
     'eslint:recommended',
-    'plugin:vue/essential'
+    'plugin:vue/recommended',
+    'plugin:nuxt/recommended'
   ],
   plugins: [
-    'vue'
   ],
-  rules: {
-    'no-console': 0
-  }
-};
+  // add your custom rules here
+  rules: {}
+}
