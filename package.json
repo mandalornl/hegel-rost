@@ -19,7 +19,7 @@
     "lintfix": "yarn lint:js --fix"
   },
   "engines": {
-    "node": "12||14||16||18"
+    "node": "14||16||18"
   },
   "dependencies": {
     "axios": "0.27.2",

@@ -10,7 +10,7 @@
     "#src/*": "./src/*.js"
   },
   "engines": {
-    "node": "12||14||16||18"
+    "node": "14||16||18"
   },
   "dependencies": {
     "cors": "2.8.5",
