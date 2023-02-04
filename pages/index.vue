@@ -272,9 +272,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.user-select-none {
-  user-select: none;
-}
-</style>

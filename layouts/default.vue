@@ -48,3 +48,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+html {
+  touch-action: manipulation;
+}
+
+.user-select-none {
+  user-select: none !important;
+}
+</style>
