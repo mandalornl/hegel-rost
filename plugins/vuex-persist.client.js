@@ -4,8 +4,8 @@ export default ({ store }) => {
   new VuexPersistence({
     key: 'hegel',
     storage: localStorage,
-    reducer: (state) => ({
-      theme: state.theme
-    })
+    modules: [
+      'theme'
+    ]
   }).plugin(store);
 };
